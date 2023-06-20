@@ -1,0 +1,82 @@
+@tailwind base;
+
+ *::-webkit-scrollbar {
+    width: 0.30rem;
+}
+
+ *::-webkit-scrollbar-track {
+background: black;
+    border-radius: 0.1rem;
+}
+
+ *::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 0.1rem;
+    border: 3px solid white;
+}
+
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    html {
+        font-family: 'Hind', sans-serif;
+        font-family: 'Pilcrow Rounded', sans-serif;;
+    }
+}
+
+
+@layer components {
+    .sidebar.show {
+        display:block;
+    }
+    .sidebar-profile.show {
+        display: block;
+    }
+    .sidebar {
+    position: absolute;
+        background-color: rgb(31 41 55);
+        right: 7%;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --tw-shadow-color: #000;
+        text-align: left;
+        display: none;
+    }
+
+        .sidebar-profile {
+            position: absolute;
+            background-color: rgb(31 41 55);
+            top:5%;
+            right: 7%;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --tw-shadow-color: #000;
+            text-align: left;
+            display: none;
+        }
+
+        .normal-class{
+            /* bg-[#18181b] flex border-b border-gray-600 capitalize hover: bg-gray-500/30 */
+            background-color: #18181b;
+            display: flex;
+            border-bottom-width: 1px;
+            border-color: rgb(75 85 99);
+            text-transform: capitalize;
+            
+        }
+        .normal-class:hover {
+            background-color: rgba(107, 114, 128, 0.6);
+            
+        }
+        .active {
+            background-color: rgb(107 114 128);
+        }
+        .inactive {
+            background-color: #18181b;
+        }
+        }
+
+        
+

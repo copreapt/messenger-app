@@ -1,0 +1,7 @@
+export const SIDEBAR_OPEN = 'SIDEBAR_OPEN'
+export const GET_ALL_USERS = 'GET_ALL_USERS'
+export const ADD_FRIEND = 'ADD_FRIEND'
+export const REMOVE_FRIEND = 'REMOVE_FRIEND'
+export const SET_FRIEND_ID = 'SET_FRIEND_ID'
+export const HANDLE_SELECT = 'HANDLE_SELECT'
+export const CHANGE_USER = 'CHANGE_USER'
