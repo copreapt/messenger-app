@@ -9,11 +9,13 @@ import UserComponent from "../components/UserComponent";
 import FriendsComponent from "../components/FriendsComponent";
 import Messages from "../components/Messages";
 import Input from "../components/Input";
+import DefaultRightColumn from "../components/DefaultRightColumn";
 
 const Chat = () => {
   const [sidebar, setSidebar] = useState(false);
   const [profileSidebar, setProfileSidebar] = useState(false);
   const [showAllUsers, setShowAllUsers] = useState(false);
+  const [showChats, setShowChats] = useState(true)
   const { userChat } = useChatContext();
 
   const toggleSidebar = () => {
@@ -27,6 +29,14 @@ const Chat = () => {
   const toggleShowAllUsers = () => {
     setShowAllUsers(!showAllUsers);
   };
+
+  const toggleShowChats = () => {
+    setShowChats(false);
+  }
+
+  const toggleShowFriends = () => {
+    setShowAllUsers(false);
+  }
 
   return (
     <main>
@@ -65,41 +75,55 @@ const Chat = () => {
             </form>
             {/* chats */}
             <div className="overflow-y-auto flex grow flex-col">
-              {showAllUsers ? <UserComponent /> : <FriendsComponent />}
+              {showAllUsers ? (
+                <UserComponent
+                  toggleShowFriends={toggleShowFriends}
+                  showAllUsers={showAllUsers}
+                />
+              ) : (
+                <FriendsComponent
+                  toggleShowChats={toggleShowChats}
+                  showChats={showChats}
+                />
+              )}
             </div>
           </div>
           {/* right column */}
-          <div className="col-span-9 rounded-md bg-gray-600/70 border border-gray-800 shadow-md shadow-black flex flex-col overflow-auto">
-            {/* top div */}
-            <div className="bg-[#202c33] p-3 justify-between flex">
-              <div className="justify-between flex">
-                <img
-                  src="https://scontent.ftce2-1.fna.fbcdn.net/v/t1.6435-9/52842315_911462915911511_3037144097111408640_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kHvDqpzptnoAX9-UgML&_nc_ht=scontent.ftce2-1.fna&oh=00_AfBhbTGBtFnXzl61jqI3iC1kEoMnaXirP_iFs6LEYzYL3Q&oe=648EFCC2"
-                  alt="image"
-                  className="rounded-full w-12"
-                />
-                <p className=" p-2 ml-2">{userChat?.displayName}</p>
+          {showChats ? (
+            <DefaultRightColumn />
+          ) : (
+            <div className="col-span-9 rounded-md bg-gray-600/70 border border-gray-800 shadow-md shadow-black flex flex-col overflow-auto">
+              {/* top div */}
+              <div className="bg-[#202c33] p-3 justify-between flex">
+                <div className="justify-between flex">
+                  <img
+                    src="https://scontent.ftce2-1.fna.fbcdn.net/v/t1.6435-9/52842315_911462915911511_3037144097111408640_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kHvDqpzptnoAX9-UgML&_nc_ht=scontent.ftce2-1.fna&oh=00_AfBhbTGBtFnXzl61jqI3iC1kEoMnaXirP_iFs6LEYzYL3Q&oe=648EFCC2"
+                    alt="image"
+                    className="rounded-full w-12"
+                  />
+                  <p className=" p-2 ml-2">{userChat?.displayName}</p>
+                </div>
+                <div className="relative">
+                  <ol className="list-none">
+                    <li className="m-3">
+                      <BsThreeDotsVertical
+                        className="text-2xl hover:cursor-pointer"
+                        onClick={toggleSidebar}
+                      />
+                    </li>
+                  </ol>
+                  <ChatMenu sidebar={sidebar} />
+                </div>
               </div>
-              <div className="relative">
-                <ol className="list-none">
-                  <li className="m-3">
-                    <BsThreeDotsVertical
-                      className="text-2xl hover:cursor-pointer"
-                      onClick={toggleSidebar}
-                    />
-                  </li>
-                </ol>
-                <ChatMenu sidebar={sidebar} />
-              </div>
-            </div>
 
-            {/* center section */}
-            <div className="bg-gray-800/60 grow justify-end overflow-y-auto">
-              <Messages />
+              {/* center section */}
+              <div className="bg-gray-800/60 grow justify-end overflow-y-auto">
+                <Messages />
+              </div>
+              {/* bottom div */}
+              <Input />
             </div>
-            {/* bottom div */}
-            <Input />
-          </div>
+          )}
         </div>
       </div>
     </main>

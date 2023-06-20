@@ -10,7 +10,7 @@ import { useChatContext } from '../context/chat_context';
 
 
 
-const FriendsComponent = () => {
+const FriendsComponent = ({toggleShowChats, showChats}) => {
 
   const [chats,setChats] = useState([]);
   const [user] = useAuthState(auth);
@@ -36,7 +36,7 @@ useEffect(() => {
             <div
               className="normal-class"
               key={chat[0]}
-              onClick={() => handleSelect(chat[1].userInfo)}
+              onClick={() => {toggleShowChats() ;handleSelect(chat[1].userInfo)}}
             >
               {/* img div */}
               <div className="flex-span-4 w-40 items-center">

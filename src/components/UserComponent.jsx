@@ -13,7 +13,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-const UserComponent = ({}) => {
+const UserComponent = ({toggleShowFriends, showAllUsers}) => {
 
   const { addFriend, all_users, friendId, addFriendId , friends, my_user, handleSelect} = useUserContext();
   const [currentUser] = useAuthState(auth);
@@ -59,7 +59,7 @@ const UserComponent = ({}) => {
           friendId === user.id ? "normal-class active" : "normal-class"
         }`}
         key={index}
-        onClick={() => addFriendId(user.id)}
+        onClick={() => {addFriendId(user.id); toggleShowFriends()}}
       >
         {/* img div */}
         <div className="flex-span-4 w-40 items-center">

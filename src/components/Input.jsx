@@ -16,7 +16,8 @@ import {v4 as uuid} from 'uuid'
     const [currentUser] = useAuthState(auth);
     const { chatId, userChat } = useChatContext();
 
-    const handleSend =  () => {
+    const handleSend =  (e) => {
+      e.preventDefault();
       if(chatId) {
         updateDoc(doc(db, "chats", chatId), {
           messages: arrayUnion({
@@ -47,8 +48,8 @@ import {v4 as uuid} from 'uuid'
          
 
   return (
-    <div className="bg-[#202c33] space-x-4 flex justify-between ">
-      
+    <form action='submit'>
+      <div className="bg-[#202c33] space-x-4 flex justify-between ">
         <MdOutlineInsertEmoticon className="text-white text-2xl ml-7 mt-5 hover:cursor-pointer" />
         <input
           type="text"
@@ -59,7 +60,8 @@ import {v4 as uuid} from 'uuid'
         <button onClick={handleSend}>
           <AiOutlineSend className="text-white text-2xl mr-5" />
         </button>
-    </div>
+      </div>
+    </form>
   );
 }
 
