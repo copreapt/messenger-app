@@ -10,6 +10,8 @@ import FriendsComponent from "../components/FriendsComponent";
 import Messages from "../components/Messages";
 import Input from "../components/Input";
 import DefaultRightColumn from "../components/DefaultRightColumn";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 const Chat = () => {
   const [sidebar, setSidebar] = useState(false);
@@ -17,6 +19,7 @@ const Chat = () => {
   const [showAllUsers, setShowAllUsers] = useState(false);
   const [showChats, setShowChats] = useState(true)
   const { userChat } = useChatContext();
+  const [currentUser] = useAuthState(auth)
 
   const toggleSidebar = () => {
     setSidebar(!sidebar);
@@ -46,7 +49,7 @@ const Chat = () => {
           <div className="col-span-3 rounded-md bg-[#18181b] shadow-md shadow-black flex flex-col overflow-auto">
             <div className="bg-[#202c33] p-3 flex justify-between">
               <img
-                src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                src={currentUser.photoURL}
                 alt="image"
                 className="rounded-full w-12"
               />
@@ -97,7 +100,7 @@ const Chat = () => {
               <div className="bg-[#202c33] p-3 justify-between flex">
                 <div className="justify-between flex">
                   <img
-                    src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                    src={userChat.photoURL}
                     alt="image"
                     className="rounded-full w-12"
                   />
