@@ -36,7 +36,10 @@ useEffect(() => {
             <div
               className="normal-class"
               key={chat[0]}
-              onClick={() => {toggleShowChats() ;handleSelect(chat[1].userInfo)}}
+              onClick={() => {
+                toggleShowChats();
+                handleSelect(chat[1].userInfo);
+              }}
             >
               {/* img div */}
               <div className="flex-span-4 w-40 items-center">
@@ -54,7 +57,9 @@ useEffect(() => {
                   </h1>
                   {/* <span className="text-xs py-3 mr-2">{chat[1].date}</span> */}
                 </div>
-                <p className="text-xs mb-2">{chat[1].lastMessage?.text}</p>
+                <p className="text-xs mb-2 normal-case">
+                  {chat[1].lastMessage?.text}
+                </p>
               </div>
             </div>
           );

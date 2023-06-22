@@ -47,22 +47,22 @@ export const UserProvider = ({ children }) => {
     return () => unsubscribe;
   }, []);
 
-  const addFriend = async (friendId) => {
-      const friend = state.all_users.find((user) => user.id === friendId); 
-      // GET DOC ID (= USER.UID)
-      const usersRef = doc(db, "users", user.uid);
-      updateDoc(usersRef, {
-        friends: arrayUnion(friend),
-      });
-  }
+  // const addFriend = async (friendId) => {
+  //     const friend = state.all_users.find((user) => user.id === friendId); 
+  //     // GET DOC ID (= USER.UID)
+  //     const usersRef = doc(db, "users", user.uid);
+  //     updateDoc(usersRef, {
+  //       friends: arrayUnion(friend),
+  //     });
+  // }
 
-  const addFriendId = (friendId) => {
-    const friend = state.all_users.find(
-      (user) => user.id === friendId
-    );
-    const FriendID = friend.id
-    dispatch({type:SET_FRIEND_ID, payload: FriendID})
-    }
+  // const addFriendId = (friendId) => {
+  //   const friend = state.all_users.find(
+  //     (user) => user.id === friendId
+  //   );
+  //   const FriendID = friend.id
+  //   dispatch({type:SET_FRIEND_ID, payload: FriendID})
+  //   }
 
 
   const handleSelect = (friendId) => {
@@ -76,8 +76,6 @@ export const UserProvider = ({ children }) => {
       timeActive, 
       setTimeActive, 
       ...state, 
-      addFriend,
-      addFriendId,
       handleSelect
     }}>
       {children}

@@ -11,15 +11,19 @@ import Messages from "../components/Messages";
 import Input from "../components/Input";
 import DefaultRightColumn from "../components/DefaultRightColumn";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { query, onSnapshot, doc, collection } from "firebase/firestore";
 
 const Chat = () => {
   const [sidebar, setSidebar] = useState(false);
   const [profileSidebar, setProfileSidebar] = useState(false);
   const [showAllUsers, setShowAllUsers] = useState(false);
-  const [showChats, setShowChats] = useState(true)
+  const [showChats, setShowChats] = useState(true);
   const { userChat } = useChatContext();
-  const [currentUser] = useAuthState(auth)
+  const [currentUser] = useAuthState(auth);
+  const [username, setUsername] = useState("");
+  const [user, setUser] = useState(null);
+  const [filteredUser, setFilteredUser] = useState();
 
   const toggleSidebar = () => {
     setSidebar(!sidebar);
@@ -35,11 +39,37 @@ const Chat = () => {
 
   const toggleShowChats = () => {
     setShowChats(false);
-  }
+  };
 
   const toggleShowFriends = () => {
     setShowAllUsers(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (user) {
+      const newUser = user.find((user) => user.name === username);
+      setFilteredUser(newUser);
+      setUsername("");
+    }
+  };
+
+  const setUserBackToEmpty = () => {
+    setFilteredUser();
   }
+
+
+  useEffect(() => {
+    const q = query(collection(db, "users"));
+    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+      let users = [];
+      QuerySnapshot.forEach((doc) => {
+        users.push({ ...doc.data(), id: doc.id });
+      });
+      setUser(users);
+    });
+    return () => unsubscribe;
+  }, [user,handleSubmit]);
 
   return (
     <main>
@@ -55,10 +85,12 @@ const Chat = () => {
               />
               <ol className="list-none relative flex items-center">
                 <li className="m-2">
-                  <TiGroup
-                    className="text-2xl hover:cursor-pointer"
+                  <h3
+                    className="text-xl hover:cursor-pointer"
                     onClick={toggleShowAllUsers}
-                  />
+                  >
+                    Add Friends
+                  </h3>
                 </li>
                 <li className=" m-3">
                   <BsThreeDotsVertical
@@ -69,11 +101,17 @@ const Chat = () => {
                 </li>
               </ol>
             </div>
-            <form action="#" className="text-center my-4 w-full flex-none">
+            <form
+              action="submit"
+              className="text-center my-4 w-full flex-none"
+              onSubmit={handleSubmit}
+            >
               <input
                 type="text"
                 className="w-5/6 h-7 p-2 rounded-md bg-[#202c33] text-white text-center"
                 placeholder="Search messages or users"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </form>
             {/* chats */}
@@ -82,6 +120,8 @@ const Chat = () => {
                 <UserComponent
                   toggleShowFriends={toggleShowFriends}
                   showAllUsers={showAllUsers}
+                  filteredUser={filteredUser}
+                  setUserBackToEmpty={setUserBackToEmpty}
                 />
               ) : (
                 <FriendsComponent

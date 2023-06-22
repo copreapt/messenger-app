@@ -8,18 +8,18 @@ const user_reducer = (state, action) => {
                 ...state,
                 all_users:action.payload
             }
-        case ADD_FRIEND: 
-            return {
-            ...state,
-            friends: action.payload.newFriends
+        // case ADD_FRIEND: 
+        //     return {
+        //     ...state,
+        //     friends: action.payload.newFriends
             
-        }
+        // }
 
-        case SET_FRIEND_ID:
-            return {
-                ...state,
-                friendId: action.payload
-            }
+        // case SET_FRIEND_ID:
+        //     return {
+        //         ...state,
+        //         friendId: action.payload
+        //     }
 
         case HANDLE_SELECT:
             return {
