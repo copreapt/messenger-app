@@ -18,23 +18,25 @@ import {v4 as uuid} from 'uuid'
 
     const handleSend =  (e) => {
       e.preventDefault();
-      if(chatId) {
-        updateDoc(doc(db, "chats", chatId), {
-          messages: arrayUnion({
-            id: uuid(),
-            text,
-            senderId: currentUser.uid,
-            date: Timestamp.now(),
-          }),
-        });
-      }
+      if (!text || text.trim().length === 0) {
+      } else {
+        if (chatId) {
+          updateDoc(doc(db, "chats", chatId), {
+            messages: arrayUnion({
+              id: uuid(),
+              text,
+              senderId: currentUser.uid,
+              date: Timestamp.now(),
+            }),
+          });
+        }
 
-        updateDoc(doc(db,"userChats", currentUser.uid), {
+        updateDoc(doc(db, "userChats", currentUser.uid), {
           [chatId + ".lastMessage"]: {
-            text
+            text,
           },
-          [chatId+ ".date"]: serverTimestamp()
-      })
+          [chatId + ".date"]: serverTimestamp(),
+        });
 
         updateDoc(doc(db, "userChats", userChat.uid), {
           [chatId + ".lastMessage"]: {
@@ -43,9 +45,10 @@ import {v4 as uuid} from 'uuid'
           [chatId + ".date"]: serverTimestamp(),
         });
 
-      setText("")
+        setText("");
       }
-         
+      }
+        
 
   return (
     <form action='submit'>

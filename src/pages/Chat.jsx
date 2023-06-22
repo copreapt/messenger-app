@@ -46,7 +46,7 @@ const Chat = () => {
           <div className="col-span-3 rounded-md bg-[#18181b] shadow-md shadow-black flex flex-col overflow-auto">
             <div className="bg-[#202c33] p-3 flex justify-between">
               <img
-                src="https://scontent.ftce2-1.fna.fbcdn.net/v/t1.6435-9/52842315_911462915911511_3037144097111408640_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kHvDqpzptnoAX9-UgML&_nc_ht=scontent.ftce2-1.fna&oh=00_AfBhbTGBtFnXzl61jqI3iC1kEoMnaXirP_iFs6LEYzYL3Q&oe=648EFCC2"
+                src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
                 alt="image"
                 className="rounded-full w-12"
               />
@@ -97,7 +97,7 @@ const Chat = () => {
               <div className="bg-[#202c33] p-3 justify-between flex">
                 <div className="justify-between flex">
                   <img
-                    src="https://scontent.ftce2-1.fna.fbcdn.net/v/t1.6435-9/52842315_911462915911511_3037144097111408640_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=kHvDqpzptnoAX9-UgML&_nc_ht=scontent.ftce2-1.fna&oh=00_AfBhbTGBtFnXzl61jqI3iC1kEoMnaXirP_iFs6LEYzYL3Q&oe=648EFCC2"
+                    src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
                     alt="image"
                     className="rounded-full w-12"
                   />
@@ -117,7 +117,7 @@ const Chat = () => {
               </div>
 
               {/* center section */}
-              <div className="bg-gray-800/60 grow justify-end overflow-y-auto">
+              <div className="bg-gray-800/60 grow overflow-y-auto">
                 <Messages />
               </div>
               {/* bottom div */}

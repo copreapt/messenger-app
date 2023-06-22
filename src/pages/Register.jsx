@@ -76,7 +76,7 @@ const register =  (e) => {
         // create user profile using firestore
 
         // user was succesifully created
-        showRegisterSuccess();
+        showRegisterSuccess()
       })
       .catch((err) => setError(err.message));
   }

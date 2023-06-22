@@ -9,7 +9,7 @@ const DefaultRightColumn = () => {
         <p>Add a friend or click on a conversation to start chatting!</p>
       </div>
       <div>
-        <img src={defaultImg} alt="chat image" className="max-h-none" />
+        <img src={defaultImg} alt="chat image"/>
       </div>
     </div>
   );
