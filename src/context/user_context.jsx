@@ -63,6 +63,7 @@ export const UserProvider = ({ children }) => {
   //   const FriendID = friend.id
   //   dispatch({type:SET_FRIEND_ID, payload: FriendID})
   //   }
+  
 
 
   const handleSelect = (friendId) => {

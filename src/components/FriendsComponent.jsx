@@ -10,7 +10,7 @@ import { useChatContext } from '../context/chat_context';
 
 
 
-const FriendsComponent = ({toggleShowChats, showChats}) => {
+const FriendsComponent = ({toggleShowChats}) => {
 
   const [chats,setChats] = useState([]);
   const [user] = useAuthState(auth);

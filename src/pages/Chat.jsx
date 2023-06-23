@@ -13,6 +13,7 @@ import DefaultRightColumn from "../components/DefaultRightColumn";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import { query, onSnapshot, doc, collection } from "firebase/firestore";
+import UploadFiles from "../components/UploadFiles";
 
 const Chat = () => {
   const [sidebar, setSidebar] = useState(false);
@@ -106,9 +107,7 @@ const Chat = () => {
                   className="rounded-full w-[50%] mt-[20%] mb-10"
                 />
               </div>
-              <div className="text-center mb-10">
-                <h1 className="text-lg text-green-200 cursor-pointer">Change Profile Photo</h1>
-              </div>
+              <UploadFiles />
               <div className="space-y-3">
                 <h1 className="text-md ml-5 text-green-200">Your name</h1>
                 <p className="text-md ml-5">{currentUser.displayName}</p>
