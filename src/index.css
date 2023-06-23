@@ -76,6 +76,24 @@ background: black;
         .inactive {
             background-color: #18181b;
         }
+                .sidebar {
+                    
+                    position: absolute;
+                    top: 0;
+                    left:0;
+                    width: 100%;
+                    height: 100%;
+                    background: black;
+                    transition: all 0.3s linear;
+                    transform: translate(-100%);
+                    z-index: -1;
+                    display: block;
+                }
+        
+                .show-sidebar {
+                    transform: translate(0);
+                    z-index: 999;
+                }
         }
 
         

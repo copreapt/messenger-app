@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
-import { TiGroup } from "react-icons/ti";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import {BiArrowBack} from 'react-icons/bi'
 import { useChatContext } from "../context/chat_context";
 import UserMenu from "../components/UserMenu";
 import ChatMenu from "../components/ChatMenu";
@@ -59,10 +59,13 @@ const Chat = () => {
     setFilteredUser();
   }
 
-  const toggleShowSidebar = () => {
-    setShowSidebar(!showSideBar)
+  const openSidebar = () => {
+    setShowSidebar(true)
   }
 
+  const closeSidebar = () => {
+    setShowSidebar(false);
+  }
   useEffect(() => {
     const q = query(collection(db, "users"));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
@@ -80,13 +83,43 @@ const Chat = () => {
       <div className="w-full h-screen bg-gray-600 bg-cover bg-center flex justify-center">
         <div className="grid grid-cols-12 w-full m-20 text-white">
           {/* left column */}
-          <div className="col-span-3 rounded-md bg-[#18181b] shadow-md shadow-black flex flex-col overflow-auto">
+          {/* sidebar */}
+
+          {/* begin of left column */}
+          <div className="col-span-3 rounded-md bg-[#18181b] shadow-md shadow-black flex flex-col overflow-auto relative">
+            <aside
+              className={`${showSideBar ? "sidebar show-sidebar" : "sidebar"}`}
+            >
+              {/* sidebar top div */}
+              <div className="bg-[#202c33] h-[20%] flex items-end">
+                <BiArrowBack
+                  className="text-3xl text white m-5 cursor-pointer"
+                  onClick={closeSidebar}
+                />
+                <h1 className="m-4 text-2xl">Profile</h1>
+              </div>
+              {/* sidebar bottom div */}
+              <div className="flex justify-center">
+                <img
+                  src={currentUser.photoURL}
+                  alt="profile picture"
+                  className="rounded-full w-[50%] mt-[20%] mb-10"
+                />
+              </div>
+              <div className="text-center mb-10">
+                <h1 className="text-lg text-green-200 cursor-pointer">Change Profile Photo</h1>
+              </div>
+              <div className="space-y-3">
+                <h1 className="text-md ml-5 text-green-200">Your name</h1>
+                <p className="text-md ml-5">{currentUser.displayName}</p>
+              </div>
+            </aside>
             <div className="bg-[#202c33] p-3 flex justify-between">
               <img
                 src={currentUser.photoURL}
                 alt="image"
                 className="rounded-full w-12 cursor-pointer"
-                onClick={toggleShowSidebar}
+                onClick={openSidebar}
               />
               <ol className="list-none relative flex items-center">
                 <li className="m-2">
