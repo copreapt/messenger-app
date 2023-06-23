@@ -24,6 +24,7 @@ const Chat = () => {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
   const [filteredUser, setFilteredUser] = useState();
+  const [showSideBar, setShowSidebar] = useState(false);
 
   const toggleSidebar = () => {
     setSidebar(!sidebar);
@@ -58,6 +59,9 @@ const Chat = () => {
     setFilteredUser();
   }
 
+  const toggleShowSidebar = () => {
+    setShowSidebar(!showSideBar)
+  }
 
   useEffect(() => {
     const q = query(collection(db, "users"));
@@ -81,7 +85,8 @@ const Chat = () => {
               <img
                 src={currentUser.photoURL}
                 alt="image"
-                className="rounded-full w-12"
+                className="rounded-full w-12 cursor-pointer"
+                onClick={toggleShowSidebar}
               />
               <ol className="list-none relative flex items-center">
                 <li className="m-2">
@@ -108,8 +113,14 @@ const Chat = () => {
             >
               <input
                 type="text"
-                className="w-5/6 h-7 p-2 rounded-md bg-[#202c33] text-white text-center"
-                placeholder="Search messages or users"
+                className={`${
+                  showAllUsers
+                    ? "w-5/6 h-7 p-2 rounded-md bg-[#202c33] text-white text-center border border-white"
+                    : "w-5/6 h-7 p-2 rounded-md bg-[#202c33] text-white text-center"
+                }`}
+                placeholder={`${
+                  showAllUsers ? "Search Friends" : "Search Conversations"
+                }`}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />

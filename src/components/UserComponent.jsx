@@ -57,34 +57,37 @@ const UserComponent = ({
   return (
     <>
       {filteredUser && (
-        <div
-          className="normal-class"
-          key={filteredUser.uid}
-          onClick={() => toggleShowFriends()}
-        >
-          {/* img div */}
-          <div className="flex-span-4 w-40 items-center">
-            <img
-              src={filteredUser.img_url}
-              alt={filteredUser.name}
-              className="rounded-full w-12 ml-7 my-3"
-            />
+        <>
+          <div
+            className="normal-class"
+            key={filteredUser.uid}
+            onClick={() => toggleShowFriends()}
+          >
+            {/* img div */}
+            <div className="flex-span-4 w-40 items-center">
+              <img
+                src={filteredUser.img_url}
+                alt={filteredUser.name}
+                className="rounded-full w-12 ml-7 my-3"
+              />
+            </div>
+            {/* text div */}
+            <div className="flex-span-8 w-full text-right">
+              <h1 className="text-md font-semibold py-2 text-left">
+                {filteredUser.name}
+              </h1>
+              <button
+                onClick={() => {
+                  handleSelect(filteredUser.id);
+                  setUserBackToEmpty();
+                }}
+                className="capitalize mb-2 border bg-gray-400 text-black border-gray-600 p-1 hover:bg-black hover:text-white hover:border-white ease-in-out hover:ease-in-out rounded-md mr-2"
+              >
+                Add to friend list
+              </button>
+            </div>
           </div>
-          {/* text div */}
-          <div className="flex-span-8 w-full text-right">
-            <h1 className="text-md font-semibold py-2 text-left">
-              {filteredUser.name}
-            </h1>
-            <button
-              onClick={() => {
-                handleSelect(filteredUser.id); setUserBackToEmpty();
-              }}
-              className="capitalize mb-2 border bg-gray-400 text-black border-gray-600 p-1 hover:bg-black hover:text-white hover:border-white ease-in-out hover:ease-in-out rounded-md mr-2"
-            >
-              Add to friend list
-            </button>
-          </div>
-        </div>
+        </>
       )}
     </>
   );
