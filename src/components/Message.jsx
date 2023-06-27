@@ -5,6 +5,7 @@ import { useChatContext } from '../context/chat_context';
 
 
  const Message = ({message}) => {
+
   const [currentUser] = useAuthState(auth)
   const {userChat} = useChatContext()
 
@@ -17,7 +18,7 @@ import { useChatContext } from '../context/chat_context';
   return (
     <div dir={`${message.senderId === currentUser.uid && "rtl"}`} lang="en">
       <div
-        className="rounded-t-md rounded-b-md  m-3 bg-[#202c33] w-max "
+        className={`${message.senderId === currentUser.uid ? "rounded-t-md rounded-b-md m-2 w-max bg-teal-900" : "rounded-t-md rounded-b-md m-2 w-max bg-[#202c33]"}`}
         ref={ref}
       >
         <bdi>

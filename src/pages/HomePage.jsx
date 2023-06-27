@@ -97,18 +97,11 @@ const HomePage = () => {
               </div>
               {/* remember me */}
               <div className="flex gap-3">
-                <label htmlFor="remember">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    aria-describedby="remember"
-                  />
-                  Remember me
-                </label>
+                
                 <a href="#">Forgot Password?</a>
               </div>
             </div>
-            <button className=" bg-gray-700 rounded-md text-2xl p-3 w-full my-4 text-white hover:text-black hover:bg-white hover:border hover:border-black">
+            <button className=" bg-gray-700 rounded-md text-2xl p-3 w-full my-4 text-white hover:text-black hover:bg-gray-200">
               Sign in
             </button>
             <p className="text-black">

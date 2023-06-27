@@ -24,8 +24,9 @@ const Chat = () => {
   const [currentUser] = useAuthState(auth);
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
-  const [filteredUser, setFilteredUser] = useState();
+  const [filteredUser, setFilteredUser] = useState(null);
   const [showSideBar, setShowSidebar] = useState(false);
+  
 
   const toggleSidebar = () => {
     setSidebar(!sidebar);
@@ -48,16 +49,15 @@ const Chat = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (user) {
-      const newUser = user.find((user) => user.name === username);
-      setFilteredUser(newUser);
-      setUsername("");
-    }
+      e.preventDefault(); 
+
+    
   };
 
   const setUserBackToEmpty = () => {
-    setFilteredUser();
+    
+    setFilteredUser(null);
+    setUsername("");
   }
 
   const openSidebar = () => {
@@ -73,8 +73,13 @@ const Chat = () => {
       let users = [];
       QuerySnapshot.forEach((doc) => {
         users.push({ ...doc.data(), id: doc.id });
+        setUser(users)
       });
-      setUser(users);
+      if(user) {
+        const newUser = user.find((user) => user.name === username);
+        setFilteredUser(newUser);
+        
+      }
     });
     return () => unsubscribe;
   }, [user,handleSubmit]);
@@ -203,9 +208,9 @@ const Chat = () => {
               </div>
 
               {/* center section */}
-              <div className="bg-gray-800/60 grow overflow-y-auto">
+              
                 <Messages />
-              </div>
+              
               {/* bottom div */}
               <Input />
             </div>

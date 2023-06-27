@@ -40,6 +40,7 @@ updateProfile(currentUser, {
   photoURL: url,
 }).then(() => {
   console.log("profile updated");
+  document.getElementById("uploadFile").value = "";
 });
               }
 
@@ -56,6 +57,7 @@ updateProfile(currentUser, {
           type="file"
           accept="/image/*"
           onChange={(e) => setFile(e.target.files[0])}
+          id='uploadFile'
           
         />
         <button

@@ -56,7 +56,7 @@ const UserComponent = ({
 
   return (
     <>
-      {filteredUser && (
+      {filteredUser &&
         <>
           <div
             className="normal-class"
@@ -88,7 +88,7 @@ const UserComponent = ({
             </div>
           </div>
         </>
-      )}
+      }
     </>
   );
 };

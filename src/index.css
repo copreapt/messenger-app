@@ -106,6 +106,21 @@ background: black;
                     text-align: center;
                 }
 
+                .message {
+                    border-top-left-radius: 0.375rem;
+                        /* 6px */
+                    border-top-right-radius: 0.375rem;
+                        /* 6px */
+                    border-bottom-right-radius: 0.375rem;
+                        /* 6px */
+                    border-bottom-left-radius: 0.375rem;
+                        /* 6px */
+                    margin: 0.75rem;
+                    width: max-content;
+                    background-color: #202c33;
+                    
+                }
+
                                 
         }
 
