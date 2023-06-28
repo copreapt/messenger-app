@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import Chat from './pages/Chat'
 import VerifyEmail from './pages/VerifyEmail'
 import PrivateRoute from './PrivateRoute'
+import Terms from './pages/Terms'
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         />
         <Route path="/register" element={<Register />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path='/terms' element={<Terms />} />
         <Route path="*" element={<Error />} />
       </Routes>
     </Router>

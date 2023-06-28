@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import { auth, db } from "../firebase";
 import {
@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import { useUserContext } from '../context/user_context'
 import { setDoc,doc } from "firebase/firestore";
-import {  toast } from "react-toastify";
+import {  toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
@@ -21,12 +21,20 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [terms, setTerms] = useState(false)
+  const [termsError, setTermsError] = useState(false)
   
   const [error, setError] = useState('')
   const navigate = useNavigate();
 
   const showRegisterSuccess = () => {
     toast.success("Your account has been created! Please verify your email!", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
+  const showRegisterFail = () => {
+    toast.error("Your account has been created! Please verify your email!", {
       position: toast.POSITION.TOP_RIGHT,
     });
   };
@@ -45,7 +53,7 @@ const validatePassword = () => {
 const register =  (e) => {
   e.preventDefault();
   setError("");
-  if (validatePassword()) {
+  if (validatePassword() && terms) {
     // Create a new user with email and password using firebase
     createUserWithEmailAndPassword(auth, email, password)
       .then(event => {
@@ -79,13 +87,25 @@ const register =  (e) => {
         showRegisterSuccess()
       })
       .catch((err) => setError(err.message));
+       setName("");
+       setEmail("");
+       setPassword("");
+       setConfirmPassword("");
+  } else {
+    setTermsError(true);
   }
-  setName('')
-  setEmail('');
-  setPassword('');
-  setConfirmPassword('');
 };
   
+const handleChange = () => {
+  setTerms(!terms)
+}
+
+ useEffect(() => {
+   const timer = setTimeout(() => {
+     setTermsError(false);
+   }, 3000);
+   return () => clearTimeout(timer);
+ }, [termsError]);
 
   return (
     <main className="flex h-screen justify-center items-center flex-col">
@@ -164,24 +184,36 @@ const register =  (e) => {
                     type="checkbox"
                     id="remember"
                     aria-describedby="remember"
-                  />{" "}
-                  I agree with{" "}
-                  <span className="font-semibold">terms and conditions</span>
+                    onChange={handleChange}
+                  />
+                  <span
+                    className={`${termsError ? "text-red-500 ml-1" : "ml-1"}`}
+                  >
+                    I agree with{" "}
+                  </span>
+                  <span
+                    className={`${
+                      termsError
+                        ? "text-red-500 font-semibold"
+                        : "font-semibold"
+                    }`}
+                  >
+                    <Link to="/terms" target='_blank'>terms and conditions</Link>
+                  </span>
                 </label>
               </div>
             </div>
-            <button
-              className="bg-gray-700 rounded-md text-xl p-3 w-full my-4 text-black hover:text-black hover:bg-white hover:border hover:border-black"
-            >
+            <button className="bg-gray-700 rounded-md text-xl p-3 w-full my-4 text-black hover:text-black hover:bg-white">
               Register new account
             </button>
             <p className="text-black">
-              Do you have an account?{" "}
+              Do you have an account?
               <Link to="/" className="font-bold">
                 Sign in
               </Link>
             </p>
           </form>
+          <ToastContainer />
         </div>
       </div>
     </main>

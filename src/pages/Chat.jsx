@@ -50,14 +50,17 @@ const Chat = () => {
 
   const handleSubmit = (e) => {
       e.preventDefault(); 
+      if (user) {
+        const newUser = user.find((user) => user.name === username);
+        setFilteredUser(newUser);
+        setUsername("");
+      }
 
     
   };
 
   const setUserBackToEmpty = () => {
-    
     setFilteredUser(null);
-    setUsername("");
   }
 
   const openSidebar = () => {
@@ -75,11 +78,6 @@ const Chat = () => {
         users.push({ ...doc.data(), id: doc.id });
         setUser(users)
       });
-      if(user) {
-        const newUser = user.find((user) => user.name === username);
-        setFilteredUser(newUser);
-        
-      }
     });
     return () => unsubscribe;
   }, [user,handleSubmit]);

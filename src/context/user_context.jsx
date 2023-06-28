@@ -66,6 +66,8 @@ export const UserProvider = ({ children }) => {
   
 
 
+
+
   const handleSelect = (friendId) => {
     const friend = state.all_users.find((user) => user.id === friendId);
     const my_user = friend
