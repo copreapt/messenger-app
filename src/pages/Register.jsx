@@ -213,7 +213,6 @@ const handleChange = () => {
               </Link>
             </p>
           </form>
-          <ToastContainer />
         </div>
       </div>
     </main>

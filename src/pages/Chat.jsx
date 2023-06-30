@@ -12,20 +12,31 @@ import Input from "../components/Input";
 import DefaultRightColumn from "../components/DefaultRightColumn";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
-import { query, onSnapshot, doc, collection } from "firebase/firestore";
+import {  onSnapshot, doc } from "firebase/firestore";
 import UploadFiles from "../components/UploadFiles";
+import {
+  orderBy,
+  limit,
+  query,
+  getDocs,
+  collection,
+  getDoc,
+  startAfter,
+} from "firebase/firestore";
 
 const Chat = () => {
   const [sidebar, setSidebar] = useState(false);
   const [profileSidebar, setProfileSidebar] = useState(false);
   const [showAllUsers, setShowAllUsers] = useState(false);
   const [showChats, setShowChats] = useState(true);
-  const { userChat } = useChatContext();
+  const { userChat, chatId } = useChatContext();
   const [currentUser] = useAuthState(auth);
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
   const [filteredUser, setFilteredUser] = useState(null);
   const [showSideBar, setShowSidebar] = useState(false);
+  const [firstFetch, setFirstFetch] = useState([])
+  const [scrollTop, setScrollTop] = useState();
   
 
   const toggleSidebar = () => {
@@ -38,6 +49,7 @@ const Chat = () => {
 
   const toggleShowAllUsers = () => {
     setShowAllUsers(!showAllUsers);
+    
   };
 
   const toggleShowChats = () => {
@@ -81,6 +93,60 @@ const Chat = () => {
     });
     return () => unsubscribe;
   }, [user,handleSubmit]);
+
+
+
+  const messagesRef = collection(db, `chats/${chatId}/messages`);  
+
+  const getDocuments = async () => {
+    
+    const querySnapshot = await getDocs(query(messagesRef, orderBy("date", "desc"), limit(20)));
+    let tempMessages = [];
+    querySnapshot.forEach((doc) => {
+      tempMessages.push({ ...doc.data(), id: doc.id });
+    });
+
+    setFirstFetch(tempMessages.reverse());
+    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+    console.log(lastVisible);
+    console.log(firstFetch)
+
+    //  2ND BATCH QUERY
+
+    if (scrollTop === 0 ) {
+
+      const next = query(
+        messagesRef,
+        orderBy("date", "desc"),
+        startAfter(lastVisible),
+        limit(15),
+      );
+
+      const nextQuerySnapshot = await getDocs(next);
+      let nextTempMessages = []
+      nextQuerySnapshot.forEach((doc) => {
+        nextTempMessages.push({...doc.data(), id: doc.id})
+        console.log(nextTempMessages.reverse());
+      })
+      
+
+    }
+  };
+
+  useEffect(() => {
+    
+getDocuments();
+        
+  },[chatId])
+
+  // useEffect(() => {
+  // console.log(scrollTop)    
+  // },[scrollTop])
+
+
+  const handleScroll = (e) => {
+    setScrollTop(e.currentTarget.scrollTop);
+  };  
 
   return (
     <main>
@@ -206,11 +272,17 @@ const Chat = () => {
               </div>
 
               {/* center section */}
-              
-                <Messages />
-              
+              <div
+                className="bg-gray-800/60 grow overflow-y-auto"
+                onScroll={handleScroll}
+              >
+                <Messages firstFetch={firstFetch} />
+              </div>
               {/* bottom div */}
-              <Input />
+              <Input
+                firstFetch={firstFetch}
+                setFirstFetch={setFirstFetch}
+              />
             </div>
           )}
         </div>

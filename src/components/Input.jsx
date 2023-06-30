@@ -1,33 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import { useChatContext } from "../context/chat_context";
 import { AiOutlineSend } from "react-icons/ai";
 import { MdOutlineInsertEmoticon } from "react-icons/md";
-import { arrayUnion, updateDoc, doc, Timestamp, serverTimestamp } from "firebase/firestore";
+import { arrayUnion, updateDoc, doc, Timestamp, serverTimestamp, collection, setDoc} from "firebase/firestore";
 import {v4 as uuid} from 'uuid'
 
 
 
- const Input = () => {
+ const Input = ({firstFetch,setFirstFetch}) => {
 
     const [text, setText] = useState('')
 
     const [currentUser] = useAuthState(auth);
     const { chatId, userChat } = useChatContext();
+    const [example, setExample] = useState(null)
 
     const handleSend =  (e) => {
       e.preventDefault();
       if (!text || text.trim().length === 0) {
       } else {
         if (chatId) {
-          updateDoc(doc(db, "chats", chatId), {
-            messages: arrayUnion({
+          const messagesRef = collection(db, `chats/${chatId}/messages`);
+          setDoc(doc(messagesRef), {
               id: uuid(),
               text,
               senderId: currentUser.uid,
               date: Timestamp.now(),
-            }),
           });
         }
 
@@ -44,11 +44,18 @@ import {v4 as uuid} from 'uuid'
           },
           [chatId + ".date"]: serverTimestamp(),
         });
-
+        setExample({ text: text, id: uuid(), senderId: currentUser.uid });
         setText("");
       }
+
       }
-        
+
+      useEffect(() => {
+        if (example) {
+          setFirstFetch([...firstFetch, example]);
+          console.log(firstFetch);
+        }
+      },[example])
 
   return (
     <form action='submit'>

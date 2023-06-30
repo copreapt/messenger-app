@@ -69,8 +69,7 @@ export const UserProvider = ({ children }) => {
 
 
   const handleSelect = (friendId) => {
-    const friend = state.all_users.find((user) => user.id === friendId);
-    const my_user = friend
+    const my_user = state.all_users.find((user) => user.id === friendId);
     dispatch({type: HANDLE_SELECT, payload: my_user})
     }    
 

@@ -19,7 +19,7 @@ const UserComponent = ({
   filteredUser,
   setUserBackToEmpty,
 }) => {
-  const { addFriend, my_user, handleSelect } = useUserContext();
+  const { my_user, handleSelect } = useUserContext();
   const [currentUser] = useAuthState(auth);
 
   useEffect(() => {
@@ -28,12 +28,13 @@ const UserComponent = ({
         currentUser.uid > my_user.uid
           ? currentUser.uid + my_user.uid
           : my_user.uid + currentUser.uid;
-      const resp = getDoc(doc(db, "chats", combinedId));
-      if (resp._fieldsProto === undefined) {
-        setDoc(doc(db, "chats", combinedId), {
-          messages: [],
-        });
+      const chatsRef = collection(db,'chats');
+      const chat = setDoc(doc(chatsRef, combinedId), {})
 
+      const messagesRef = collection(db, `chats/${combinedId}/messages`);
+      if (messagesRef._fieldsProto === undefined) {
+        setDoc(doc(messagesRef), {
+        });   
         updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
             uid: my_user.uid,
@@ -52,12 +53,12 @@ const UserComponent = ({
         });
       }
     }
-  }, [handleSelect, my_user]);
+  }, [handleSelect, my_user, filteredUser]);
 
 
   return (
     <>
-      {filteredUser &&
+      { filteredUser && 
         <>
           <div
             className="normal-class"
@@ -89,7 +90,7 @@ const UserComponent = ({
             </div>
           </div>
         </>
-      }
+}
     </>
   );
 };

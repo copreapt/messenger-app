@@ -10,6 +10,7 @@ import { useChatContext } from '../context/chat_context';
 
 
 
+
 const FriendsComponent = ({toggleShowChats}) => {
 
   const [chats,setChats] = useState([]);
@@ -26,12 +27,14 @@ useEffect(() => {
     };
   }
 
-},[user.uid]);
+},[user.uid, handleSelect]);
 
 
   return (
     <>
-      {Object.entries(chats)?.sort((a,b) => b[1].date - a[1].date).map((chat) => {
+      {Object.entries(chats)
+        ?.sort((a, b) => b[1].date - a[1].date)
+        .map((chat) => {
           return (
             <div
               className="normal-class"
