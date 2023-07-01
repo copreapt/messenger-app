@@ -114,8 +114,8 @@ const Chat = () => {
       });
       const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
       setFirstFetch(tempMessages.reverse());
+      console.log(" temp", tempMessages);
       setLastVisibleDoc(lastVisible)
-      console.log(lastVisibleDoc);
       console.log(firstFetch);
     }, (error) => {
      console.log(error)
@@ -123,26 +123,6 @@ const Chat = () => {
      
      return () => unsubscribe;
     },[chatId])
-
-    // GET FIRST DOCUMENT FROM DB
-
-    // useEffect(() => {
-    //   // GET FIRasT DOCUMENT FROM COLLECTION
-    //   const unsubscribe = onSnapshot(
-    //     q1,
-    //     (querySnapshot) => {
-    //       let tempMessages = [];
-    //       querySnapshot.forEach((doc) => {
-            
-    //       });
-    //       const firstVisible = querySnapshot.docs[0];
-    //       setFirstDoc(firstVisible);
-    //       console.log("first visible doc", firstDoc);
-    //     }
-    //   );
-
-    //   return () => unsubscribe;
-    // }, [chatId]);
 
     //  2ND BATCH QUERY
 
@@ -163,9 +143,9 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
   const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
   setSecondBatch(nextTempMessages.reverse());
   setLastVisibleDoc(lastVisible);
-  console.log(secondBatch);
+  // console.log(secondBatch);
   console.log(firstFetch);
-  console.log(lastVisibleDoc);
+  // console.log(lastVisibleDoc);  
   return () => unsubscribe;
 });
  }
@@ -174,7 +154,7 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
     
 
   useEffect(() => {
-    setFirstFetch([...secondBatch, ...firstFetch]);
+    setFirstFetch([...firstFetch, ...secondBatch]);
   }, [secondBatch])
 
   // CHECK EVERYTIME LAST VISIBLEDOC CHANGES, IF IT'S === TO FIRST DOC, THEN IT MEANS WE GOT TO LAST MESSAGE
