@@ -12,7 +12,7 @@ import Input from "../components/Input";
 import DefaultRightColumn from "../components/DefaultRightColumn";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
-import {  onSnapshot, doc } from "firebase/firestore";
+import {  onSnapshot, doc, QuerySnapshot } from "firebase/firestore";
 import UploadFiles from "../components/UploadFiles";
 import {
   orderBy,
@@ -22,6 +22,7 @@ import {
   collection,
   getDoc,
   startAfter,
+  endAt
 } from "firebase/firestore";
 
 const Chat = () => {
@@ -37,6 +38,9 @@ const Chat = () => {
   const [showSideBar, setShowSidebar] = useState(false);
   const [firstFetch, setFirstFetch] = useState([])
   const [scrollTop, setScrollTop] = useState();
+  const [lastVisibleDoc, setLastVisibleDoc] = useState(null)
+  const [firstDoc, setFirstDoc] = useState(null)
+  const [secondBatch, setSecondBatch] = useState([])
   
 
   const toggleSidebar = () => {
@@ -96,52 +100,84 @@ const Chat = () => {
 
 
 
+
   const messagesRef = collection(db, `chats/${chatId}/messages`);  
+  const q = query(messagesRef, orderBy("date", "desc"), limit(20));
+  const q1 = query(messagesRef, orderBy("date", "asc"), limit(5));
 
-  const getDocuments = async () => {
-    
-    const querySnapshot = await getDocs(query(messagesRef, orderBy("date", "desc"), limit(20)));
-    let tempMessages = [];
-    querySnapshot.forEach((doc) => {
-      tempMessages.push({ ...doc.data(), id: doc.id });
+    useEffect(() => {
+      // LISTEN TO DB UPDATE -> EACH TIME MESSAGES COLLECTION CHANGES, GRAB ME THE DOCUMENT THAT FIRED
+      const unsubscribe =  onSnapshot(q, (querySnapshot) => {
+      let tempMessages = [];
+      querySnapshot.forEach((doc) => {
+        tempMessages.push({...doc.data()});
+      });
+      const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+      setFirstFetch(tempMessages.reverse());
+      setLastVisibleDoc(lastVisible)
+      console.log(lastVisibleDoc);
+      console.log(firstFetch);
+    }, (error) => {
+     console.log(error)
     });
+     
+     return () => unsubscribe;
+    },[chatId])
 
-    setFirstFetch(tempMessages.reverse());
-    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-    console.log(lastVisible);
-    console.log(firstFetch)
+    // GET FIRST DOCUMENT FROM DB
+
+    useEffect(() => {
+      // GET FIRT DOCUMENT FROM COLLECTION
+      const unsubscribe = onSnapshot(
+        q1,
+        (querySnapshot) => {
+          let tempMessages = [];
+          querySnapshot.forEach((doc) => {
+            
+          });
+          const firstVisible = querySnapshot.docs[0];
+          setFirstDoc(firstVisible);
+          console.log("first visible doc", firstDoc);
+        }
+      );
+
+      return () => unsubscribe;
+    }, [chatId]);
 
     //  2ND BATCH QUERY
 
-    if (scrollTop === 0 ) {
+    useEffect(() => {
+         
+          const next = query(
+            messagesRef,
+            orderBy("date", "desc"),
+            startAfter(lastVisibleDoc),
+            endAt(firstDoc),
+            limit(15)
+          );
 
-      const next = query(
-        messagesRef,
-        orderBy("date", "desc"),
-        startAfter(lastVisible),
-        limit(15),
-      );
+          const unsubscribe = onSnapshot(next, (querySnapshot) => {
+            let nextTempMessages = [];
+            querySnapshot.forEach((doc) => {
+              nextTempMessages.push({...doc.data()})
+            })
+            const lastVisible =
+              querySnapshot.docs[querySnapshot.docs.length - 1];
+            setSecondBatch(nextTempMessages.reverse());
+            setLastVisibleDoc(lastVisible);
+            console.log(secondBatch);
+            console.log(firstFetch);
+            console.log(lastVisibleDoc);
+          });
 
-      const nextQuerySnapshot = await getDocs(next);
-      let nextTempMessages = []
-      nextQuerySnapshot.forEach((doc) => {
-        nextTempMessages.push({...doc.data(), id: doc.id})
-        console.log(nextTempMessages.reverse());
-      })
-      
-
-    }
-  };
+          return () => unsubscribe;      
+    }, [scrollTop == 0])
+    
 
   useEffect(() => {
-    
-getDocuments();
-        
-  },[chatId])
+    setFirstFetch([...secondBatch, ...firstFetch]);
+  }, [secondBatch])
 
-  // useEffect(() => {
-  // console.log(scrollTop)    
-  // },[scrollTop])
 
 
   const handleScroll = (e) => {

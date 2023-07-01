@@ -44,18 +44,18 @@ import {v4 as uuid} from 'uuid'
           },
           [chatId + ".date"]: serverTimestamp(),
         });
-        setExample({ text: text, id: uuid(), senderId: currentUser.uid });
         setText("");
       }
 
       }
+    
 
-      useEffect(() => {
-        if (example) {
-          setFirstFetch([...firstFetch, example]);
-          console.log(firstFetch);
-        }
-      },[example])
+      // useEffect(() => {
+      //   if (example) {
+      //     setFirstFetch([...firstFetch, example]);
+      //     console.log(firstFetch);
+      //   }
+      // },[example])
 
   return (
     <form action='submit'>

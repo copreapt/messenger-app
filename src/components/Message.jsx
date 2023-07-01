@@ -1,13 +1,12 @@
 import React, { useEffect, useRef} from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth} from "../firebase";
-import { useChatContext } from '../context/chat_context';
+
 
 
  const Message = ({message}) => {
 
   const [currentUser] = useAuthState(auth)
-  const {userChat} = useChatContext()
 
   const ref = useRef();
 
