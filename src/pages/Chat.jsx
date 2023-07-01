@@ -126,57 +126,64 @@ const Chat = () => {
 
     // GET FIRST DOCUMENT FROM DB
 
-    useEffect(() => {
-      // GET FIRT DOCUMENT FROM COLLECTION
-      const unsubscribe = onSnapshot(
-        q1,
-        (querySnapshot) => {
-          let tempMessages = [];
-          querySnapshot.forEach((doc) => {
+    // useEffect(() => {
+    //   // GET FIRasT DOCUMENT FROM COLLECTION
+    //   const unsubscribe = onSnapshot(
+    //     q1,
+    //     (querySnapshot) => {
+    //       let tempMessages = [];
+    //       querySnapshot.forEach((doc) => {
             
-          });
-          const firstVisible = querySnapshot.docs[0];
-          setFirstDoc(firstVisible);
-          console.log("first visible doc", firstDoc);
-        }
-      );
+    //       });
+    //       const firstVisible = querySnapshot.docs[0];
+    //       setFirstDoc(firstVisible);
+    //       console.log("first visible doc", firstDoc);
+    //     }
+    //   );
 
-      return () => unsubscribe;
-    }, [chatId]);
+    //   return () => unsubscribe;
+    // }, [chatId]);
 
     //  2ND BATCH QUERY
 
     useEffect(() => {
+         if(lastVisibleDoc){
+const next = query(
+  messagesRef,
+  orderBy("date", "desc"),
+  startAfter(lastVisibleDoc),
+  limit(15)
+);
+
+const unsubscribe = onSnapshot(next, (querySnapshot) => {
+  let nextTempMessages = [];
+  querySnapshot.forEach((doc) => {
+    nextTempMessages.push({ ...doc.data() });
+  });
+  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+  setSecondBatch(nextTempMessages.reverse());
+  setLastVisibleDoc(lastVisible);
+  console.log(secondBatch);
+  console.log(firstFetch);
+  console.log(lastVisibleDoc);
+  return () => unsubscribe;
+});
+ }
          
-          const next = query(
-            messagesRef,
-            orderBy("date", "desc"),
-            startAfter(lastVisibleDoc),
-            endAt(firstDoc),
-            limit(15)
-          );
-
-          const unsubscribe = onSnapshot(next, (querySnapshot) => {
-            let nextTempMessages = [];
-            querySnapshot.forEach((doc) => {
-              nextTempMessages.push({...doc.data()})
-            })
-            const lastVisible =
-              querySnapshot.docs[querySnapshot.docs.length - 1];
-            setSecondBatch(nextTempMessages.reverse());
-            setLastVisibleDoc(lastVisible);
-            console.log(secondBatch);
-            console.log(firstFetch);
-            console.log(lastVisibleDoc);
-          });
-
-          return () => unsubscribe;      
     }, [scrollTop == 0])
     
 
   useEffect(() => {
     setFirstFetch([...secondBatch, ...firstFetch]);
   }, [secondBatch])
+
+  // CHECK EVERYTIME LAST VISIBLEDOC CHANGES, IF IT'S === TO FIRST DOC, THEN IT MEANS WE GOT TO LAST MESSAGE
+
+  useEffect(() => {
+    if(lastVisibleDoc === firstDoc){
+      setLastVisibleDoc(null)
+    }
+  },[lastVisibleDoc])
 
 
 

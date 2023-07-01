@@ -11,7 +11,7 @@ import { auth} from "../firebase";
   const ref = useRef();
 
   useEffect(() => {
-    ref.current?.scrollIntoView({behavior: "auto"})
+    ref.current?.scrollIntoView({behavior: "smooth"})
   },[message])
   
   return (
