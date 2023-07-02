@@ -114,6 +114,7 @@ const Chat = () => {
       });
       const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
       setFirstFetch(tempMessages.reverse());
+      setSecondBatch([])
       console.log(" temp", tempMessages);
       setLastVisibleDoc(lastVisible)
       console.log(firstFetch);
@@ -122,6 +123,13 @@ const Chat = () => {
     });
      
      return () => unsubscribe;
+    },[chatId])
+
+    // RESET STATES WHEN chatId CHANGES 
+
+    useEffect(() => {
+      setFirstFetch([]);
+      setSecondBatch([]);
     },[chatId])
 
     //  2ND BATCH QUERY
@@ -154,8 +162,12 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
     
 
   useEffect(() => {
-    setFirstFetch([...firstFetch, ...secondBatch]);
+    setFirstFetch([...secondBatch, ...firstFetch]);
   }, [secondBatch])
+
+  useEffect(() => {
+
+  })
 
   // CHECK EVERYTIME LAST VISIBLEDOC CHANGES, IF IT'S === TO FIRST DOC, THEN IT MEANS WE GOT TO LAST MESSAGE
 
