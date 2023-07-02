@@ -2,8 +2,6 @@ import React, { useEffect, useRef} from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth} from "../firebase";
 
-
-
  const Message = ({message}) => {
 
   const [currentUser] = useAuthState(auth)

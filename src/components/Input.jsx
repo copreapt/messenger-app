@@ -4,18 +4,16 @@ import { auth, db } from "../firebase";
 import { useChatContext } from "../context/chat_context";
 import { AiOutlineSend } from "react-icons/ai";
 import { MdOutlineInsertEmoticon } from "react-icons/md";
-import { arrayUnion, updateDoc, doc, Timestamp, serverTimestamp, collection, setDoc} from "firebase/firestore";
+import { updateDoc, doc, Timestamp, serverTimestamp, collection, setDoc} from "firebase/firestore";
 import {v4 as uuid} from 'uuid'
 
 
 
- const Input = ({firstFetch,setFirstFetch}) => {
+ const Input = () => {
 
     const [text, setText] = useState('')
-
     const [currentUser] = useAuthState(auth);
     const { chatId, userChat } = useChatContext();
-    const [example, setExample] = useState(null)
 
     const handleSend =  (e) => {
       e.preventDefault();
@@ -46,16 +44,7 @@ import {v4 as uuid} from 'uuid'
         });
         setText("");
       }
-
       }
-    
-
-      // useEffect(() => {
-      //   if (example) {
-      //     setFirstFetch([...firstFetch, example]);
-      //     console.log(firstFetch);
-      //   }
-      // },[example])
 
   return (
     <form action='submit'>

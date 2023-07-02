@@ -1,8 +1,7 @@
 import React, {useState} from 'react'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { auth, db } from "../firebase";
+import { auth} from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { doc, updateDoc } from "firebase/firestore";
 import {storage} from '../firebase'
 import { updateProfile } from "firebase/auth";
 

@@ -1,13 +1,10 @@
-import { ADD_FRIEND, GET_ALL_USERS, SET_FRIEND_ID, HANDLE_SELECT } from "../actions";
-
-
 const user_reducer = (state, action) => {
     switch(action.type) {
-        case GET_ALL_USERS:
-            return {
-                ...state,
-                all_users:action.payload
-            }
+        // case GET_ALL_USERS:
+        //     return {
+        //         ...state,
+        //         all_users:action.payload
+        //     }
         // case ADD_FRIEND: 
         //     return {
         //     ...state,
@@ -21,11 +18,11 @@ const user_reducer = (state, action) => {
         //         friendId: action.payload
         //     }
 
-        case HANDLE_SELECT:
-            return {
-                ...state,
-                my_user: action.payload
-            }  
+        // case HANDLE_SELECT:
+        //     return {
+        //         ...state,
+        //         my_user: action.payload
+        //     }  
         default:
             return state
     }

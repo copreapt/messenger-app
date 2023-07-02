@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useUserContext } from '../context/user_context';
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
@@ -8,10 +7,7 @@ import {
 } from "firebase/firestore";
 import { useChatContext } from '../context/chat_context';
 
-
-
-
-const FriendsComponent = ({toggleShowChats}) => {
+const FriendsComponent = ({toggleShowChats, myUser}) => {
 
   const [chats,setChats] = useState([]);
   const [user] = useAuthState(auth);
@@ -27,7 +23,7 @@ useEffect(() => {
     };
   }
 
-},[user.uid, handleSelect]);
+},[user.uid, handleSelect, myUser]);
 
 
   return (

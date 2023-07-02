@@ -1,33 +1,27 @@
-import React, { useEffect, useState } from 'react'
-import { useUserContext } from '../context/user_context';
+import React, { useEffect } from 'react'
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
-  addDoc,
   collection,
   serverTimestamp,
   doc,
   updateDoc,
   setDoc,
-  arrayUnion,
-  getDoc,
 } from "firebase/firestore";
 
 const UserComponent = ({
-  toggleShowFriends,
-  showAllUsers,
   filteredUser,
   setUserBackToEmpty,
+  myUser
 }) => {
-  const { my_user, handleSelect } = useUserContext();
   const [currentUser] = useAuthState(auth);
 
   useEffect(() => {
-    if (my_user) {
+    if (myUser) {
       const combinedId =
-        currentUser.uid > my_user.uid
-          ? currentUser.uid + my_user.uid
-          : my_user.uid + currentUser.uid;
+        currentUser.uid > myUser[0].uid
+          ? currentUser.uid + myUser[0].uid
+          : myUser[0].uid + currentUser.uid;
       const chatsRef = collection(db,'chats');
       const chat = setDoc(doc(chatsRef, combinedId), {})
 
@@ -37,13 +31,13 @@ const UserComponent = ({
         });   
         updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
-            uid: my_user.uid,
-            displayName: my_user.name,
-            photoURL: my_user.img_url,
+            uid: myUser[0].uid,
+            displayName: myUser[0].name,
+            photoURL: myUser[0].img_url,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-        updateDoc(doc(db, "userChats", my_user.uid), {
+        updateDoc(doc(db, "userChats", myUser[0].uid), {
           [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
@@ -53,7 +47,7 @@ const UserComponent = ({
         });
       }
     }
-  }, [handleSelect, my_user, filteredUser]);
+  }, [myUser, filteredUser]);
 
 
   return (
@@ -63,24 +57,23 @@ const UserComponent = ({
           <div
             className="normal-class"
             key={filteredUser.uid}
-            onClick={() => toggleShowFriends()}
+            
           >
             {/* img div */}
             <div className="flex-span-4 w-40 items-center">
               <img
-                src={filteredUser.img_url}
-                alt={filteredUser.name}
+                src={filteredUser[0].img_url}
+                alt={filteredUser[0].name}
                 className="rounded-full w-12 ml-7 my-3"
               />
             </div>
             {/* text div */}
             <div className="flex-span-8 w-full text-right">
               <h1 className="text-md font-semibold py-2 text-left">
-                {filteredUser.name}
+                {filteredUser[0].name}
               </h1>
               <button
                 onClick={() => {
-                  handleSelect(filteredUser.id);
                   setUserBackToEmpty();
                 }}
                 className="capitalize mb-2 border bg-gray-400 text-black border-gray-600 p-1 hover:bg-black hover:text-white hover:border-white ease-in-out hover:ease-in-out rounded-md mr-2"

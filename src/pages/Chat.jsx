@@ -18,11 +18,9 @@ import {
   orderBy,
   limit,
   query,
-  getDocs,
   collection,
-  getDoc,
   startAfter,
-  endAt
+  where
 } from "firebase/firestore";
 
 const Chat = () => {
@@ -41,6 +39,8 @@ const Chat = () => {
   const [lastVisibleDoc, setLastVisibleDoc] = useState(null)
   const [firstDoc, setFirstDoc] = useState(null)
   const [secondBatch, setSecondBatch] = useState([])
+  const [myUser, setMyUser] = useState(null)
+
   
 
   const toggleSidebar = () => {
@@ -61,22 +61,16 @@ const Chat = () => {
   };
 
   const toggleShowFriends = () => {
-    setShowAllUsers(false);
+    setShowAllUsers(!showAllUsers);
   };
 
   const handleSubmit = (e) => {
-      e.preventDefault(); 
-      if (user) {
-        const newUser = user.find((user) => user.name === username);
-        setFilteredUser(newUser);
-        setUsername("");
-      }
-
-    
+      e.preventDefault();
   };
 
   const setUserBackToEmpty = () => {
     setFilteredUser(null);
+    setUsername("");
   }
 
   const openSidebar = () => {
@@ -86,27 +80,30 @@ const Chat = () => {
   const closeSidebar = () => {
     setShowSidebar(false);
   }
+
+  // FETCH USER WHERE USER.NAME === USERNAME
+
   useEffect(() => {
-    const q = query(collection(db, "users"));
+    const q = query(collection(db, "users"), where("name", "==", username));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
       QuerySnapshot.forEach((doc) => {
         users.push({ ...doc.data(), id: doc.id });
-        setUser(users)
+        setFilteredUser(users)
+        setMyUser(users)
       });
     });
     return () => unsubscribe;
   }, [user,handleSubmit]);
 
-
-
+  // REFERENCES TO DATA BASE
 
   const messagesRef = collection(db, `chats/${chatId}/messages`);  
   const q = query(messagesRef, orderBy("date", "desc"), limit(20));
-  const q1 = query(messagesRef, orderBy("date", "asc"), limit(5));
+
+  // FETCH FIRST BATCH OF MESSAGES (ORDER BY DATE, DESC, LIMIT 20)
 
     useEffect(() => {
-      // LISTEN TO DB UPDATE -> EACH TIME MESSAGES COLLECTION CHANGES, GRAB ME THE DOCUMENT THAT FIRED
       const unsubscribe =  onSnapshot(q, (querySnapshot) => {
       let tempMessages = [];
       querySnapshot.forEach((doc) => {
@@ -115,9 +112,7 @@ const Chat = () => {
       const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
       setFirstFetch(tempMessages.reverse());
       setSecondBatch([])
-      console.log(" temp", tempMessages);
       setLastVisibleDoc(lastVisible)
-      console.log(firstFetch);
     }, (error) => {
      console.log(error)
     });
@@ -132,7 +127,7 @@ const Chat = () => {
       setSecondBatch([]);
     },[chatId])
 
-    //  2ND BATCH QUERY
+    //  FETCH SECOND BATCH OF MESSAGES (ORDER BY DATE, DESC, LIMIT 15)
 
     useEffect(() => {
          if(lastVisibleDoc){
@@ -150,10 +145,7 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
   });
   const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
   setSecondBatch(nextTempMessages.reverse());
-  setLastVisibleDoc(lastVisible);
-  // console.log(secondBatch);
-  console.log(firstFetch);
-  // console.log(lastVisibleDoc);  
+  setLastVisibleDoc(lastVisible);  
   return () => unsubscribe;
 });
  }
@@ -165,9 +157,6 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
     setFirstFetch([...secondBatch, ...firstFetch]);
   }, [secondBatch])
 
-  useEffect(() => {
-
-  })
 
   // CHECK EVERYTIME LAST VISIBLEDOC CHANGES, IF IT'S === TO FIRST DOC, THEN IT MEANS WE GOT TO LAST MESSAGE
 
@@ -177,11 +166,10 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
     }
   },[lastVisibleDoc])
 
-
-
   const handleScroll = (e) => {
     setScrollTop(e.currentTarget.scrollTop);
   };  
+
 
   return (
     <main>
@@ -230,7 +218,7 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
                     className="text-xl hover:cursor-pointer"
                     onClick={toggleShowAllUsers}
                   >
-                    Add Friends
+                    {showAllUsers ? "Back to Friends List" : "Add Friends"}
                   </h3>
                 </li>
                 <li className=" m-3">
@@ -269,11 +257,14 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
                   showAllUsers={showAllUsers}
                   filteredUser={filteredUser}
                   setUserBackToEmpty={setUserBackToEmpty}
+                  myUser={myUser}
                 />
               ) : (
                 <FriendsComponent
                   toggleShowChats={toggleShowChats}
                   showChats={showChats}
+                  filteredUser={filteredUser}
+                  myUser={myUser}
                 />
               )}
             </div>
@@ -314,10 +305,7 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
                 <Messages firstFetch={firstFetch} />
               </div>
               {/* bottom div */}
-              <Input
-                firstFetch={firstFetch}
-                setFirstFetch={setFirstFetch}
-              />
+              <Input firstFetch={firstFetch} setFirstFetch={setFirstFetch} />
             </div>
           )}
         </div>
