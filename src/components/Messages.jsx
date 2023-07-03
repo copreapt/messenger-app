@@ -1,16 +1,12 @@
-import React from 'react'
-import Message from './Message'
+import React from "react";
+import Message from "./Message";
 
- const Messages = ({firstFetch}) => {
-   return (
-     <>
-         {firstFetch?.map((message, index) => {
-           return <Message message={message} key={index} />;
-         })}
-       
-     </>
-   );
- }
-
-
-export default Messages;
+export default function Messages({ firstFetch }){
+  return (
+    <>
+      {firstFetch?.map((message, index) => {
+        return <Message message={message} key={index} />;
+      })}
+    </>
+  );
+};

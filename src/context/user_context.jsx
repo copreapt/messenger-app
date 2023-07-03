@@ -1,24 +1,22 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
-import userReducer from '../reducers/user_reducer'
+import userReducer from "../reducers/user_reducer";
 
 const UserContext = React.createContext();
 
-const initialState = {
-  
-};
+const initialState = {};
 
 export const UserProvider = ({ children }) => {
   const [timeActive, setTimeActive] = useState(false);
   const [state, dispatch] = useReducer(userReducer, initialState);
-  
-
 
   return (
-    <UserContext.Provider value={{ 
-      timeActive, 
-      setTimeActive, 
-      ...state, 
-    }}>
+    <UserContext.Provider
+      value={{
+        timeActive,
+        setTimeActive,
+        ...state,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
