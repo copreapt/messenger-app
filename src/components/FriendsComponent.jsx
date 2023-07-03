@@ -23,7 +23,7 @@ useEffect(() => {
     };
   }
 
-},[user.uid, handleSelect, myUser]);
+},[user.uid, myUser]);
 
 
   return (

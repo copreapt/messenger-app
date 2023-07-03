@@ -22,12 +22,9 @@ const UserComponent = ({
         currentUser.uid > myUser[0].uid
           ? currentUser.uid + myUser[0].uid
           : myUser[0].uid + currentUser.uid;
-      const chatsRef = collection(db,'chats');
-      const chat = setDoc(doc(chatsRef, combinedId), {})
-
-      const messagesRef = collection(db, `chats/${combinedId}/messages`);
-        setDoc(doc(messagesRef), {
-        });   
+      // const messagesRef = collection(db, `chats/${combinedId}/messages`);
+      //   setDoc(doc(messagesRef), {
+      //   });   
         updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
             uid: myUser[0].uid,
@@ -46,7 +43,7 @@ const UserComponent = ({
         });
       
     }
-  }, [myUser, filteredUser]);
+  }, [filteredUser]);
 
 
   return (
