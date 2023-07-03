@@ -26,7 +26,6 @@ const UserComponent = ({
       const chat = setDoc(doc(chatsRef, combinedId), {})
 
       const messagesRef = collection(db, `chats/${combinedId}/messages`);
-      if (messagesRef._fieldsProto === undefined) {
         setDoc(doc(messagesRef), {
         });   
         updateDoc(doc(db, "userChats", currentUser.uid), {
@@ -45,7 +44,7 @@ const UserComponent = ({
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-      }
+      
     }
   }, [myUser, filteredUser]);
 
