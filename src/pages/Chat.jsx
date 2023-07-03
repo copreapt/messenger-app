@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import {BiArrowBack} from 'react-icons/bi'
+import { BiArrowBack } from "react-icons/bi";
 import { useChatContext } from "../context/chat_context";
 import UserMenu from "../components/UserMenu";
 import ChatMenu from "../components/ChatMenu";
@@ -12,7 +12,7 @@ import Input from "../components/Input";
 import DefaultRightColumn from "../components/DefaultRightColumn";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
-import {  onSnapshot, doc, QuerySnapshot } from "firebase/firestore";
+import { onSnapshot, doc, QuerySnapshot } from "firebase/firestore";
 import UploadFiles from "../components/UploadFiles";
 import {
   orderBy,
@@ -20,10 +20,10 @@ import {
   query,
   collection,
   startAfter,
-  where
+  where,
 } from "firebase/firestore";
 
-const Chat = () => {
+export default function Chat(){
   const [sidebar, setSidebar] = useState(false);
   const [profileSidebar, setProfileSidebar] = useState(false);
   const [showAllUsers, setShowAllUsers] = useState(false);
@@ -34,142 +34,123 @@ const Chat = () => {
   const [user, setUser] = useState(null);
   const [filteredUser, setFilteredUser] = useState(null);
   const [showSideBar, setShowSidebar] = useState(false);
-  const [firstFetch, setFirstFetch] = useState([])
+  const [firstFetch, setFirstFetch] = useState([]);
   const [scrollTop, setScrollTop] = useState();
-  const [lastVisibleDoc, setLastVisibleDoc] = useState(null)
-  const [firstDoc, setFirstDoc] = useState(null)
-  const [secondBatch, setSecondBatch] = useState([])
-  const [myUser, setMyUser] = useState(null)
+  const [lastVisibleDoc, setLastVisibleDoc] = useState(null);
+  const [firstDoc, setFirstDoc] = useState(null);
+  const [secondBatch, setSecondBatch] = useState([]);
+  const [myUser, setMyUser] = useState(null);
 
-  
-
-  const toggleSidebar = () => {
-    setSidebar(!sidebar);
-  };
-
-  const toggleProfileSidebar = () => {
-    setProfileSidebar(!profileSidebar);
-  };
-
-  const toggleShowAllUsers = () => {
-    setShowAllUsers(!showAllUsers);
-    
-  };
-
-  const toggleShowChats = () => {
-    setShowChats(false);
-  };
-
-  const toggleShowFriends = () => {
-    setShowAllUsers(!showAllUsers);
-  };
-
-  const handleSubmit = (e) => {
-      e.preventDefault();
-  };
+  const toggleSidebar = () => setSidebar(!sidebar);
+  const toggleProfileSidebar = () => setProfileSidebar(!profileSidebar);
+  const toggleShowAllUsers = () => setShowAllUsers(!showAllUsers);
+  const toggleShowChats = () => setShowChats(false);
+  const toggleShowFriends = () => setShowAllUsers(!showAllUsers);
 
   const setUserBackToEmpty = () => {
     setFilteredUser(null);
     setUsername("");
-  }
+  };
 
   const openSidebar = () => {
-    setShowSidebar(true)
-  }
+    setShowSidebar(true);
+  };
 
   const closeSidebar = () => {
     setShowSidebar(false);
-  }
+  };
 
   // FETCH USER WHERE USER.NAME === USERNAME
+  const searchFriend = (e) => {
+    e.preventDefault();
 
-  useEffect(() => {
     const q = query(collection(db, "users"), where("name", "==", username));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
       QuerySnapshot.forEach((doc) => {
         users.push({ ...doc.data(), id: doc.id });
-        setFilteredUser(users)
-        setMyUser(users)
+        setFilteredUser(users);
+        setMyUser(users);
       });
     });
-    return () => unsubscribe;
-  }, [user,handleSubmit]);
 
-  // REFERENCES TO DATA BASE
-
-  const messagesRef = collection(db, `chats/${chatId}/messages`);  
-  const q = query(messagesRef, orderBy("date", "desc"), limit(20));
-
+    return () => unsubscribe();
+  };
   // FETCH FIRST BATCH OF MESSAGES (ORDER BY DATE, DESC, LIMIT 20)
 
-    useEffect(() => {
-      const unsubscribe =  onSnapshot(q, (querySnapshot) => {
-      let tempMessages = [];
-      querySnapshot.forEach((doc) => {
-        tempMessages.push({...doc.data()});
+  useEffect(() => {
+		const messagesRef = collection(db, `chats/${chatId}/messages`);
+		const q = query(messagesRef, orderBy("date", "desc"), limit(20));
+
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
+        let tempMessages = [];
+        querySnapshot.forEach((doc) => {
+          tempMessages.push({ ...doc.data() });
+        });
+        const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        setFirstFetch(tempMessages.reverse());
+        setSecondBatch([]);
+        setLastVisibleDoc(lastVisible);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    return () => unsubscribe;
+  }, [chatId]);
+
+  // RESET STATES WHEN chatId CHANGES
+
+  useEffect(() => {
+    setFirstFetch([]);
+    setSecondBatch([]);
+  }, [chatId]);
+
+  //  FETCH SECOND BATCH OF MESSAGES (ORDER BY DATE, DESC, LIMIT 15)
+
+  useEffect(() => {
+		// REFERENCES TO DATA BASE
+		const messagesRef = collection(db, `chats/${chatId}/messages`);
+		
+    if (lastVisibleDoc) {
+      const next = query(
+        messagesRef,
+        orderBy("date", "desc"),
+        startAfter(lastVisibleDoc),
+        limit(15)
+      );
+
+      const unsubscribe = onSnapshot(next, (querySnapshot) => {
+        let nextTempMessages = [];
+        querySnapshot.forEach((doc) => {
+          nextTempMessages.push({ ...doc.data() });
+        });
+        const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        setSecondBatch(nextTempMessages.reverse());
+        setLastVisibleDoc(lastVisible);
+        return () => unsubscribe;
       });
-      const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-      setFirstFetch(tempMessages.reverse());
-      setSecondBatch([])
-      setLastVisibleDoc(lastVisible)
-    }, (error) => {
-     console.log(error)
-    });
-     
-     return () => unsubscribe;
-    },[chatId])
-
-    // RESET STATES WHEN chatId CHANGES 
-
-    useEffect(() => {
-      setFirstFetch([]);
-      setSecondBatch([]);
-    },[chatId])
-
-    //  FETCH SECOND BATCH OF MESSAGES (ORDER BY DATE, DESC, LIMIT 15)
-
-    useEffect(() => {
-         if(lastVisibleDoc){
-const next = query(
-  messagesRef,
-  orderBy("date", "desc"),
-  startAfter(lastVisibleDoc),
-  limit(15)
-);
-
-const unsubscribe = onSnapshot(next, (querySnapshot) => {
-  let nextTempMessages = [];
-  querySnapshot.forEach((doc) => {
-    nextTempMessages.push({ ...doc.data() });
-  });
-  const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-  setSecondBatch(nextTempMessages.reverse());
-  setLastVisibleDoc(lastVisible);  
-  return () => unsubscribe;
-});
- }
-         
-    }, [scrollTop == 0])
-    
+    }
+  }, [scrollTop == 0]);
 
   useEffect(() => {
     setFirstFetch([...secondBatch, ...firstFetch]);
-  }, [secondBatch])
-
+  }, [secondBatch]);
 
   // CHECK EVERYTIME LAST VISIBLEDOC CHANGES, IF IT'S === TO FIRST DOC, THEN IT MEANS WE GOT TO LAST MESSAGE
 
   useEffect(() => {
-    if(lastVisibleDoc === firstDoc){
-      setLastVisibleDoc(null)
+    if (lastVisibleDoc === firstDoc) {
+      setLastVisibleDoc(null);
     }
-  },[lastVisibleDoc])
+  }, [lastVisibleDoc]);
 
   const handleScroll = (e) => {
     setScrollTop(e.currentTarget.scrollTop);
-  };  
-
+  };
 
   return (
     <main>
@@ -233,7 +214,7 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
             <form
               action="submit"
               className="text-center my-4 w-full flex-none"
-              onSubmit={handleSubmit}
+              onSubmit={searchFriend}
             >
               <input
                 type="text"
@@ -313,5 +294,3 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
     </main>
   );
 };
-
-export default Chat;
