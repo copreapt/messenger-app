@@ -10,7 +10,7 @@ import { auth} from "../firebase";
 
   useEffect(() => {
     ref.current?.scrollIntoView({behavior: "smooth"})
-  },[message])
+  },[])
   
   return (
     <div dir={`${message.senderId === currentUser.uid && "rtl"}`} lang="en">

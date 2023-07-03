@@ -289,7 +289,7 @@ const unsubscribe = onSnapshot(next, (querySnapshot) => {
                     <li className="m-3">
                       <BsThreeDotsVertical
                         className="text-2xl hover:cursor-pointer"
-                        onClick={toggleSidebar}
+                        onClick={toggleSidebar}  
                       />
                     </li>
                   </ol>
