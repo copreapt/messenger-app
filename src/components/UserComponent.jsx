@@ -21,10 +21,7 @@ const UserComponent = ({
       const combinedId =
         currentUser.uid > myUser[0].uid
           ? currentUser.uid + myUser[0].uid
-          : myUser[0].uid + currentUser.uid;
-      // const messagesRef = collection(db, `chats/${combinedId}/messages`);
-      //   setDoc(doc(messagesRef), {
-      //   });   
+          : myUser[0].uid + currentUser.uid;   
         updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
             uid: myUser[0].uid,
@@ -41,7 +38,6 @@ const UserComponent = ({
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-      
     }
   }, [filteredUser]);
 

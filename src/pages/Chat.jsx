@@ -45,21 +45,15 @@ export default function Chat(){
   const toggleShowAllUsers = () => setShowAllUsers(!showAllUsers);
   const toggleShowChats = () => setShowChats(false);
   const toggleShowFriends = () => setShowAllUsers(!showAllUsers);
-
+  const openSidebar = () => setShowSidebar(true);
+  const closeSidebar = () => setShowSidebar(false);
   const setUserBackToEmpty = () => {
     setFilteredUser(null);
     setUsername("");
   };
 
-  const openSidebar = () => {
-    setShowSidebar(true);
-  };
-
-  const closeSidebar = () => {
-    setShowSidebar(false);
-  };
-
   // FETCH USER WHERE USER.NAME === USERNAME
+
   const searchFriend = (e) => {
     e.preventDefault();
     const q = query(collection(db, "users"), where("name", "==", username));
@@ -71,15 +65,14 @@ export default function Chat(){
         setMyUser(users);
       });
     });
-
     return () => unsubscribe();
   };
+
   // FETCH FIRST BATCH OF MESSAGES (ORDER BY DATE, DESC, LIMIT 20)
 
   useEffect(() => {
 		const messagesRef = collection(db, `chats/${chatId}/messages`);
 		const q = query(messagesRef, orderBy("date", "desc"), limit(20));
-
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
@@ -96,7 +89,6 @@ export default function Chat(){
         console.log(error);
       }
     );
-
     return () => unsubscribe;
   }, [chatId]);
 
@@ -110,9 +102,7 @@ export default function Chat(){
   //  FETCH SECOND BATCH OF MESSAGES (ORDER BY DATE, DESC, LIMIT 15)
 
   useEffect(() => {
-		// REFERENCES TO DATA BASE
 		const messagesRef = collection(db, `chats/${chatId}/messages`);
-		
     if (lastVisibleDoc) {
       const next = query(
         messagesRef,
@@ -120,7 +110,6 @@ export default function Chat(){
         startAfter(lastVisibleDoc),
         limit(15)
       );
-
       const unsubscribe = onSnapshot(next, (querySnapshot) => {
         let nextTempMessages = [];
         querySnapshot.forEach((doc) => {
