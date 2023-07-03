@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { useChatContext } from '../context/chat_context';
 
-const FriendsComponent = ({toggleShowChats, myUser}) => {
+export default function FriendsComponent ({toggleShowChats, myUser}){
 
   const [chats,setChats] = useState([]);
   const [user] = useAuthState(auth);
@@ -66,6 +66,3 @@ useEffect(() => {
     </>
   );
 }
-
-
-export default FriendsComponent;

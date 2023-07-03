@@ -8,7 +8,6 @@ export default function Message({ message }){
   const ref = useRef();
 
   useEffect(() => {
-  
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { BiArrowBack } from "react-icons/bi";
@@ -31,7 +31,6 @@ export default function Chat(){
   const { userChat, chatId } = useChatContext();
   const [currentUser] = useAuthState(auth);
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
   const [filteredUser, setFilteredUser] = useState(null);
   const [showSideBar, setShowSidebar] = useState(false);
   const [firstFetch, setFirstFetch] = useState([]);
@@ -63,7 +62,6 @@ export default function Chat(){
   // FETCH USER WHERE USER.NAME === USERNAME
   const searchFriend = (e) => {
     e.preventDefault();
-
     const q = query(collection(db, "users"), where("name", "==", username));
     const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
       let users = [];
