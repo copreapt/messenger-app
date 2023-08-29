@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineLogin } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -7,12 +7,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase";
 import { useUserContext } from "../context/user_context";
-import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-
-
-
-
 
 const HomePage = () => {
 
@@ -36,7 +31,7 @@ const HomePage = () => {
             })
             .catch((err) => alert(err.message));
         } else {
-          naviga1te("/chat");
+          navigate("/chat");
         }
       })
       .catch((err) => setError(err.message));

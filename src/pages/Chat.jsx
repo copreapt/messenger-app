@@ -22,6 +22,7 @@ import {
   startAfter,
   where,
 } from "firebase/firestore";
+import {AiOutlinePlus, AiOutlineMinus} from "react-icons/ai"
 
 export default function Chat(){
   const [sidebar, setSidebar] = useState(false);
@@ -181,13 +182,24 @@ export default function Chat(){
                 onClick={openSidebar}
               />
               <ol className="list-none relative flex items-center">
-                <li className="m-2">
+                <li className="m-2 flex items-center space-x-3">
                   <h3
                     className="text-xl hover:cursor-pointer"
                     onClick={toggleShowAllUsers}
                   >
                     {showAllUsers ? "Back to Friends List" : "Add Friends"}
                   </h3>
+                  {showAllUsers ? (
+                    <AiOutlineMinus
+                      className="text-2xl cursor-pointer"
+                      onClick={toggleShowAllUsers}
+                    />
+                  ) : (
+                    <AiOutlinePlus
+                      className="text-2xl cursor-pointer"
+                      onClick={toggleShowAllUsers}
+                    />
+                  )}
                 </li>
                 <li className=" m-3">
                   <BsThreeDotsVertical
@@ -257,7 +269,7 @@ export default function Chat(){
                     <li className="m-3">
                       <BsThreeDotsVertical
                         className="text-2xl hover:cursor-pointer"
-                        onClick={toggleSidebar}  
+                        onClick={toggleSidebar}
                       />
                     </li>
                   </ol>

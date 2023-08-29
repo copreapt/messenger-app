@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { auth} from "../firebase";
+import {db, auth} from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {storage} from '../firebase'
 import { updateProfile } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 
 
  const UploadFiles = () => {
@@ -40,6 +41,11 @@ updateProfile(currentUser, {
 }).then(() => {
   console.log("profile updated");
   document.getElementById("uploadFile").value = "";
+});
+
+const docRef = doc(db, "users", currentUser.uid);
+updateDoc(docRef, {
+  img_url: url,
 });
               }
 
